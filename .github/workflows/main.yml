@@ -2,12 +2,10 @@
 #head ref = source
 name: merge-rules
 
-on: 
-  pull_request:
-    branches: [ DEV, TEST, UAT, PROD, main, feature/*, hotfix/* ]
+on: pull_request
 
 jobs:
-  check_branch:
+  check-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Check main to DEV
@@ -30,4 +28,12 @@ jobs:
         run: |
           echo "Error: You can only merge UAT and hotfix/* branches to PROD"
           exit 1
+      - name: Check PROD to main #master
+        if: github.base_ref == 'main' && github.head_ref != 'PROD'
+        run: |
+          echo "Error: You can only merge PROD to main"
+          exit 1
 #!contains(github.head_ref, 'feature')
+
+#contains(github.base_ref, 'feature') && !contains(github.head_ref, 'feature')
+#contains(github.base_ref, 'hotfix') && !contains(github.head_ref, 'hotfix')
