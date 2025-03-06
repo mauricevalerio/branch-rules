@@ -1,3 +1,5 @@
+#base ref = destination
+#head ref = source
 name: merge-rules
 
 on: pull_request
@@ -31,8 +33,13 @@ jobs:
         run: |
           echo "Error: You can only merge PROD to main"
           exit 1
-      - name: Block merge from feature not coming from feature #master
+      - name: Block merge from feature not coming from feature
         if: contains(github.base_ref, 'feature/') && !contains(github.head_ref, 'feature/')
         run: |
           echo "Error: You can only merge feature branches to feature branches"
+          exit 1
+      - name: Block any merge to hotfix branches
+        if: contains(github.base_ref, 'hotfix/')
+        run: |
+          echo "Error: You cannot merge into any hotfix branches"
           exit 1
