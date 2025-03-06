@@ -1,0 +1,33 @@
+#base ref = destination
+#head ref = source
+name: merge-rules
+
+on: 
+  pull_request:
+    branches: [ DEV, TEST, UAT, PROD, main, feature/*, hotfix/* ]
+
+jobs:
+  check_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check main to DEV
+        if: github.base_ref == 'DEV' && (github.head_ref != 'main' && !contains(github.head_ref, 'feature')) #master
+        run: |
+          echo "Error: You can only merge main and feature/* branches to DEV"
+          exit 1
+      - name: Check DEV to TEST
+        if: github.base_ref == 'TEST' && github.head_ref != 'DEV'
+        run: |
+          echo "Error: You can only merge DEV to TEST"
+          exit 1
+      - name: Check TEST to UAT
+        if: github.base_ref == 'UAT' && github.head_ref != 'TEST'
+        run: |
+          echo "Error: You can only merge TEST to UAT"
+          exit 1
+      - name: Check UAT to PROD
+        if: github.base_ref == 'PROD' && (github.head_ref != 'UAT' && !contains(github.head_ref, 'hotfix'))
+        run: |
+          echo "Error: You can only merge UAT and hotfix/* branches to PROD"
+          exit 1
+#!contains(github.head_ref, 'feature')
