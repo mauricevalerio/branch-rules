@@ -1,2 +1,2 @@
 # branch-rules
-Push directly to DEV
+from feature to DEV
