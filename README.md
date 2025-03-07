@@ -1,2 +1,2 @@
 # branch-rules
-from feature to DEV
+from feature with s to DEV
